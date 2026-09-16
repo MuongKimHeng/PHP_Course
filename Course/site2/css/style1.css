@@ -1,0 +1,37 @@
+/* css/style1.css — site-wide touches on top of Bootstrap */
+header {
+    padding: .8rem 0;
+}
+
+section {
+    padding: 1.5rem 0;
+    min-height: 60vh;
+}
+
+footer {
+    margin: 1rem 0 2rem;
+    text-align: center;
+    color: #888;
+}
+
+/* the four admin forms: a divider between the two columns */
+.left {
+    border-right: 1px solid #dee2e6;
+}
+
+.left,
+.right {
+    padding: 1rem;
+}
+
+/* small gaps between the hand-written inputs and buttons */
+form input[type=text],
+form input[type=number],
+form textarea,
+form select {
+    margin: .3rem .3rem .3rem 0;
+}
+
+form .btn {
+    margin: .3rem .2rem;
+}
