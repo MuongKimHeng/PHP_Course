@@ -1,0 +1,23 @@
+/* css/info.css — the hotel description page */
+body {
+    padding: 2rem;
+}
+
+.row {
+    justify-content: center;
+}
+
+#gallery {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    justify-content: center;
+}
+
+#gallery img {
+    height: 140px;
+    border-radius: 6px;
+}

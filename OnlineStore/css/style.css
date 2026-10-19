@@ -1,0 +1,31 @@
+#result{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.item-card{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.item-card.row{
+    flex-direction: row;
+    align-items: center;
+}
+.gallery img{
+    max-height: 420px;
+    object-fit: contain;
+    background: #f8f9fa;
+}
+.gallery-thumbs img{
+    height: 70px;
+    width: 90px;
+    object-fit: cover;
+    cursor: pointer;
+}
+.bar{
+    height: .6rem;
+    background: #0d6efd;
+    border-radius: .3rem;
+    min-width: 2px;
+}
