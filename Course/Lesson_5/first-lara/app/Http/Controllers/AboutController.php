@@ -20,7 +20,7 @@ class AboutController extends Controller
         $countries = ['Argentina', 'Belgium', 'Canada', 'Cambodia'];
         $students = ['Titrabot', 'Sreyleap', 'Seavyun'];
 
-        return view('about.us', compact('countries', 'stu'));
+        return view('about.us', compact('countries', 'students'));
         // return view('about.us', ['countries'=>$countries, 'students'=>$students]);
     }
 }
