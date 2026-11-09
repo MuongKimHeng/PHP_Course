@@ -8,3 +8,6 @@ Route::get('/hello', function () {
 });
 
 Route::get('/about', [AboutController::class, 'about']);
+Route::get('/student/{name}',function(string $name){
+    return '<h1> Student name. '.$name. '</h1>';
+});
