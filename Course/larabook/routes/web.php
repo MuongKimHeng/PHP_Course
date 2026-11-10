@@ -1,17 +1,28 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BlockController;
 use App\Http\Controllers\TopicController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('child');
+    return view('welcome'); // Or 'child', depending on your view name
 });
-// Route::prefix('topics')->group(function(){
-//     Route::get('/index', function(){return '';})->name('topics.index');
-// });
-// Route::prefix('blocks')->group(function(){
-//     Route::get('/create', function(){return '';})->name('blocks.create');
-// });
-Route::resource('topics',TopicController::class);
-Route::resource('blocks',BlockController::class);
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+// --- YOUR CUSTOM LARABOOK ROUTES ---
+Route::post('topics/search', [TopicController::class, 'search'])->name('topics.search');
+Route::resource('topics', TopicController::class);
+Route::resource('blocks', BlockController::class);
+
+// --- BREEZE PROFILE ROUTES ---
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';

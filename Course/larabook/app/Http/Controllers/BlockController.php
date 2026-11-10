@@ -70,25 +70,44 @@ class BlockController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Block $block)
     {
-        //
+        return view('block.edit', [
+            'block' => $block,
+            'topics' => Topic::pluck('topicname', 'id'),
+            'page' => 'Edit Block',
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Block $block):RedirectResponse
     {
-        //
+        $validated = $request->validate([
+            'topic_id' => ['required', 'exists:topics,id'],
+            'title' => ['required', 'max:100'],
+            'content' => ['required'],
+            'image' => ['nullable', 'image', 'max:2048'],
+        ]);
+
+        if ($request->hasFile('image')){
+            $validated['image_path'] = $request->file('image')->store('images', 'public');
+        }
+        unset($validated['image']);
+        $block->update($validated);
+        return redirect()->route('topics.show', $block->topic_id);
+
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Block $block)
     {
-        //
+        $block->delete();
+
+        return redirect()->route('topics.index');
     }
 }
 

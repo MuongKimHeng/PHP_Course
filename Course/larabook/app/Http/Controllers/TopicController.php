@@ -70,8 +70,19 @@ class TopicController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Block $block)
     {
-        //
+        $block->delete();
+        return redirect()->route('topics.index');
+    }
+
+    public function search(Request $request) {
+        $search = $request->string('searchform');
+
+        return view('topic.index', [
+            'page' => 'Main page',
+            'topics' => Topic::where('topicname', 'like', "%{$search}%")->get(),
+            'topic' => null,
+        ]);
     }
 }

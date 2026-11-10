@@ -2,14 +2,13 @@
 
 @section('content')
     <h4>{{ $page }}</h4>
-    <form method="POST" action="{{ route('blocks.store') }}"
-         enctype="multipart/form-data">
+    <form method="POST" action="{{ route('blocks.store') }}" enctype="multipart/form-data">
         @csrf
         <div class="mb-3">
             <label for="topic_id" class="form-label">Select Topic</label>
             <select id="topic_id" name="topic_id" class="form-select">
-                @foreach ( $topics as $id => $name )
-                    <option value="{{ $id }}" @selected(old('topics_id') == $id)>
+                @foreach ($topics as $id => $name)
+                    <option value="{{ $id }}" @selected(old('topic_id') == $id)>
                         {{ $name }}
                     </option>
                 @endforeach
@@ -18,18 +17,15 @@
                 Add new Topic
             </a>
         </div>
-        
+
         <div class="mb-3">
             <label for="title" class="form-label">Block Title</label>
-            <input type="text" id="title" name="title"
-                    class="form-control" value="{{ old('title') }}">
+            <input type="text" id="title" name="title" class="form-control" value="{{ old('title') }}">
         </div>
 
         <div class="mb-3">
             <label for="content" class="form-label">Add Content</label>
-            <textarea id="content" name="content" rows="5" 
-                    class="form-control">{{  old('content') }}
-            </textarea>
+            <textarea id="content" name="content" rows="5" class="form-control">{{ old('content') }}</textarea>
         </div>
 
         <div class="mb-3">

@@ -1,6 +1,13 @@
 @extends('layouts.master')
 
 @section('content')
+
+<form method="POST" action="{{ route('topics.search') }}" class="input-group mb-3">
+    @csrf
+    <input type="text" name="searchform" class="form-control" placeholder="Enter Topic">
+    <button class="btn btn-success" type="submit">Search</button>
+</form>
+
     <div class="row">
         <div class="col-md-3">
             <ul class="list-unstyled">
@@ -21,7 +28,7 @@
                     <div class="mb-4">
                         <h2>{{ $b->title }}</h2>
                         {{-- -Show the image if it exists --}}
-                        @if ($b->images_path)
+                        @if ($b->image_path)
                             <img src="{{ asset('storage/' . $b->image_path) }}" height="150" class="float-start me-3" alt="">
                         @endif
                         <p>{{ $b->content }}</p>
