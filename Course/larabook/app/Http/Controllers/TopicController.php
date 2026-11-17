@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+
+use App\Http\Requests\StoreTopicRequest;
 use App\Models\Topic;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class TopicController extends Controller
@@ -14,12 +18,12 @@ class TopicController extends Controller
     {
         return view('topic.index', [
             'page' => 'Main page',
-            'topics' => Topic::all(),
+            'topics' => Topic::withCount('blocks')->get(),
             'topic' => null,
         ]);
     }
 
-    /**
+    /** 
      * Show the form for creating a new resource.
      */
     public function create()
@@ -30,24 +34,24 @@ class TopicController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreTopicRequest $request): RedirectResponse
     {
-        $request->validate(['topicname'=>['required', 'max:100', 'unique:topics']]);
-        $topic = Topic::create(['topicname'=>$request->topicname]);
+        $topic = Topic::create($request->validated());
+
         return redirect()->route('topics.create')
-            ->with('message', "New topic {$topic->topicname} has been added with id={$topic->id}!");;
+            ->with('message', "New topic {$topic->topicname} has been added with id={$topic->id}!");
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Topic $topic)
+    public function show(Topic $topic): View
     {
         return view('topic.index', [
             'page' => 'Main page',
             'topics' => Topic::all(),
             'topic' => $topic,
-            'blocks' => $topic->blocks,
+            'blocks' => $topic->blocks()->with(['user', 'tags'])->get(),
         ]);
     }
 
@@ -76,7 +80,7 @@ class TopicController extends Controller
         return redirect()->route('topics.index');
     }
 
-    public function search(Request $request) {
+    public function search(Request $request): View {
         $search = $request->string('searchform');
 
         return view('topic.index', [

@@ -2,6 +2,8 @@
 
 @section('content')
     <h4>{{ $page }}</h4>
+    @include('block.partials.errors')
+
     <form method="POST" action="{{ route('blocks.update', $block) }}" enctype="multipart/form-data">
         @csrf
         @method('PUT')
@@ -38,7 +40,7 @@
                 <div class="mb-2">
                     <img src="{{ asset('storage/' . $block->image_path) }}" height="100" class="rounded" alt="Current Image">
                 </div>
-            @enderror
+            @endif
             <input type="file" id="image" name="image" class="form-control">
             <div class="form-text">Leave blank if you don't want to change the image.</div>
         </div>

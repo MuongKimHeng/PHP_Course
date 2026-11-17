@@ -2,6 +2,11 @@
 
 @section('content')
     <h4>{{ $page }}</h4>
+    @include('block.partials.errors')
+    @if (session('massage'))
+    
+    @endif
+
     <form method="POST" action="{{ route('blocks.store') }}" enctype="multipart/form-data">
         @csrf
         <div class="mb-3">

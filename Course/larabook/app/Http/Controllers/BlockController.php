@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreBlockRequest;
+use App\Http\Requests\UpdateBlockRequest;
 use App\Models\Block;
 use App\Models\Topic;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Illuminate\Http\RedirectResponse;
 
 class BlockController extends Controller
 {
@@ -36,27 +36,19 @@ class BlockController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(StoreBlockRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'topic_id' => ['required', 'exists:topics,id'],
-            'title' => ['required', 'max:100'],
-            'content' => ['required'],
-            'image' => ['nullable', 'image', 'max:2048'],
-        ]);
+        $data = $request->validated();
 
         if ($request->hasFile('image')) {
-            // stores the file in storage/app/public/images and return a path like "images/aB3xYz.. .jpg
-            $validated['image_path'] = $request->file('image')->store('images', 'public');
+            $data['image_path'] = $request->file('image')->store('images', 'public');
         }
+        unset($data['image']);
 
-        unset($validated['image']); // the file object itself is not a table column
+        // creating THROUGH the user fills user_id automatically
+        $request->user()->blocks()->create($data);
 
-        Block::create($validated);
-
-        return redirect()
-            ->route('blocks.create')
-            ->with('message', 'New block has been added!');
+        return redirect()->route('blocks.create')->with('message', 'New block has been added!');
     }
 
     /**
@@ -70,8 +62,10 @@ class BlockController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Block $block)
+    public function edit(Block $block): View
     {
+        $this->authorize('update', $block);
+        
         return view('block.edit', [
             'block' => $block,
             'topics' => Topic::pluck('topicname', 'id'),
@@ -82,29 +76,28 @@ class BlockController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Block $block):RedirectResponse
+    public function update(UpdateBlockRequest $request, Block $block): RedirectResponse
     {
-        $validated = $request->validate([
-            'topic_id' => ['required', 'exists:topics,id'],
-            'title' => ['required', 'max:100'],
-            'content' => ['required'],
-            'image' => ['nullable', 'image', 'max:2048'],
-        ]);
+        $this->authorize('update', $block);
 
-        if ($request->hasFile('image')){
-            $validated['image_path'] = $request->file('image')->store('images', 'public');
+        $data = $request->validated();
+
+        if ($request->hasFile('image')) {
+            $data['image_path'] = $request->file('image')->store('images', 'public');
         }
-        unset($validated['image']);
-        $block->update($validated);
-        return redirect()->route('topics.show', $block->topic_id);
+        unset($data['image']);
 
+        $block->update($data);
+
+        return redirect()->route('topics.show', $block->topic_id);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Block $block)
+    public function destroy(Block $block): RedirectResponse
     {
+        $this->authorize('delete', $block);
         $block->delete();
 
         return redirect()->route('topics.index');

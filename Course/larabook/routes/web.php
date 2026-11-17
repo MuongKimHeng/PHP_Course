@@ -15,8 +15,12 @@ Route::get('/dashboard', function () {
 
 // --- YOUR CUSTOM LARABOOK ROUTES ---
 Route::post('topics/search', [TopicController::class, 'search'])->name('topics.search');
-Route::resource('topics', TopicController::class);
-Route::resource('blocks', BlockController::class);
+Route::middleware('auth')->group(function(){
+    Route::resource('topics', TopicController::class)->only(['create', 'store']);
+    Route::resource('blocks', BlockController::class)->except(['index', 'show']);
+});
+
+Route::resource('topics', TopicController::class)->only(['index', 'show']);
 
 // --- BREEZE PROFILE ROUTES ---
 Route::middleware('auth')->group(function () {
